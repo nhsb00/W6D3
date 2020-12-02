@@ -42,9 +42,9 @@ class SQLObject
   def self.all
     results = DBConnection.execute(<<-SQL)
     SELECT
-      #{table_name}.*
+      #{self.table_name}.*
     FROM
-      #{table_name}
+      #{self.table_name}
     SQL
 
     self.parse_all(results)
@@ -56,14 +56,17 @@ class SQLObject
 
   def self.find(id)
     # self.all.find { |obj| obj.id == id }
-    DBConnection.execute(<<-SQL)
+    results = DBConnection.execute(<<-SQL, id)
     SELECT
-      #{table_name}.*
+      #{self.table_name}.*
     FROM
-      #{table_name}
+      #{self.table_name}
     WHERE
-      #{table_name}.id = ?
+      #{self.table_name}.id = ?
     SQL
+
+    parse_all(results).first
+    
   end
 
   def initialize(params = {})
